@@ -13,6 +13,14 @@ unless os.windows?
 end
 
 describe port(80) do
-  it { should_not be_listening }
-  skip 'This is an example test, replace with your own test.'
+  it { should be_listening }
+end
+
+describe package('httpd') do
+  it { should be_installed }
+end
+
+describe file('/var/www/html/index.html') do
+  it { should be_file }
+  its('content') { should match (/Automation for the People/) }
 end

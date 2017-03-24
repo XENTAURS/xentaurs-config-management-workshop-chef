@@ -16,4 +16,6 @@ suites:
 
 verifier:
   name: inspec
+  inspec_tests:
+    - test/recipes
   sudo: true
