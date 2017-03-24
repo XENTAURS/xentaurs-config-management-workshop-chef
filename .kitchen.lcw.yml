@@ -1,0 +1,102 @@
+# LM LCW Specific config
+
+driver:
+  name: vra
+  username: <%= "#{ENV['KITCHEN_VRA_API_ID'] || ENV['USERNAME']}@lm.lmig.com" %>
+  password: <%= require 'json'; ENV['KITCHEN_VRA_API_PASSWORD'] || (JSON.parse(File.read("#{ENV['USERPROFILE']}/.kitchen/vracredentials.json")))['vra_n']  %>
+  tenant: vsphere.local
+  catalog_id: 51d698ae-0ac5-4cf9-bd90-ffb41f532373
+  base_url: https://lcd.lmig.com/
+  verify_ssl: false
+  subtenant_id: 35ef176f-18a8-48ea-ae06-f9b6bc423e2f
+  request_timeout: 7200
+  server_ready_retries: 10
+  cpus: 1
+  memory: 4096
+  lease_days: 2
+
+provisioner:
+  http_proxy: $null
+  https_proxy: $null
+  name: chef_zero
+  client_rb:
+    ssl_verify_mode: :verify_none
+  require_chef_omnibus: false
+  chef_client_path: 'C:/opscode/chef/bin/chef-client.bat'
+
+
+verifier:
+  name: inspec
+
+transport:
+  username: <%= ENV['USERNAME'] %>
+  password: <%= require 'json'; ENV['KITCHEN_VRA_API_PASSWORD'] || (JSON.parse(File.read("#{ENV['USERPROFILE']}/.kitchen/vracredentials.json")))['vra_n']  %>
+  name: winrm
+  elevated: true
+  elevated_username: System
+  elevated_password: null
+
+platforms:
+  - name: windows
+    driver:
+      extra_parameters:
+        provider-MarketAlignment:
+          type: string
+          value: US Consumer Markets (USCM)
+        provider-Custom.Chef.TestKitchen:
+            type: string
+            value: true
+        provider-VirtualMachine.Memory.Size:
+          type: integer
+          value: 4096
+        provider-VirtualMachine.LeaseDay:
+          type: integer
+          value: 0
+        provider-XDFriendlyLabel:
+          type: string
+          value: Friendly name
+        provider-XDFriendly:
+          type: string
+          value: Test Kitchen Node for -<%= File.basename(Dir.getwd) %>
+        provider-blueprintId:
+          type: string
+          value: 1b3841f9-68cb-455e-ac3e-9dcaf2de3404
+        provider-VirtualMachine.Disk0.IsClone:
+          type: string
+          value: true
+        provider-VirtualMachine.Disk0.StorageReservationPolicyt:
+          type: string
+          value: VDE-SingleCluster
+        provider-Cafe.Shim.VirtualMachine.MinCost:
+          type: string
+          value: 0.8060
+        provider-Cafe.Shim.VirtualMachine.Description:
+          type: string
+          value: For Test Kitchen <%= File.basename(Dir.getwd) %>
+        provider-provisioningGroupId:
+            type: string
+            value: 35ef176f-18a8-48ea-ae06-f9b6bc423e2f
+        provider-Cafe.Shim.VirtualMachine.TotalStorageSize:
+            type: decimal
+            value: 60.0
+        provider-__Notes:
+            type: string
+            value:  Test Kitchen Node for -<%= File.basename(Dir.getwd) %>
+        provider-Cafe.Shim.VirtualMachine.Reason:
+            type: string
+            value: Tech Kitchen
+        provider-Cafe.Shim.VirtualMachine.NumberOfInstances:
+            type: integer
+            value: 1
+        provider-VirtualMachine.CPU.Count:
+            type: integer
+            value: 1
+        provider-VirtualMachine.Disk0.Size:
+            type: string
+            value: 60
+        provider-Cafe.Shim.VirtualMachine.MaxCost:
+            type: string
+            value: 0.8060
+        provider-Cafe.Shim.VirtualMachine.AssignToUser:
+            type: string
+            value: <%= "#{ENV['KITCHEN_VRA_API_ID'] || ENV['USERNAME']}@lm.lmig.com" %>

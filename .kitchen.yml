@@ -1,0 +1,21 @@
+---
+provisioner:
+  name: chef_zero
+  require_chef_omnibus: 12.6.0  # Target specific client version
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: rhel-6.5
+  - name: rhel-7.0
+  - name: windows-2012r2
+
+suites:
+  - name: default
+    run_list:
+      - recipe[xentaurs-config-management-workshop-chef::default]
+    verifier:
+      inspec_tests:
+        - test/recipes
+    attributes:

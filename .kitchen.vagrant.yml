@@ -1,0 +1,21 @@
+# LM Vagrant Specific config
+---
+driver:
+  name: vagrant
+
+provisioner:
+  name: chef_zero
+  https_proxy: http://www-proxy.lmig.com:80
+  http_proxy: http://www-proxy.lmig.com:80
+
+platforms:
+  - name: centos-7.2
+
+suites:
+  - name: default
+    run_list:
+      - recipe[xentaurs-config-management-workshop-chef::default]
+
+verifier:
+  name: inspec
+  sudo: true

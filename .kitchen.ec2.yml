@@ -1,0 +1,85 @@
+# LM AWS EC2 Specific config
+---
+driver:
+  name: ec2
+  region: us-east-1
+  instance_type: t2.micro
+  # Core services and lin access
+  security_group_ids: ["sg-b80e56dd","sg-be133bdb"]
+  interface: private
+  user_data: <%= File.expand_path('./test/integration/config/aws/lm_rhel_user_data.txt') %>
+  tags: # Required by https://forge.lmig.com/wiki/display/ETSPC/Chef+Convergence+Testing
+    Name: "Chef-Test-Kitchen"
+    "lm_sbu": USCM  # One of [CI|USCM|GS|ICM|ETS|LMB|HS|GIS]
+    "lm_owner": <%= ENV['USER'] %>
+    "lm_app": Chef-Converge-<%= File.basename(Dir.getwd) %>
+    "lm_app_env": sandbox
+    # Author or cookbook owners support mailbox
+    "lm_applicationsupportemail": 'bcarpio@xentaurs.com'
+  ## subnet 1
+  #availability_zone: us-east-1a
+  #subnet_id: subnet-995f4eb1
+  ## subnet 2
+  availability_zone: us-east-1a
+  subnet_id: subnet-404a786a
+  ## subnet 3
+  #availability_zone: us-east-1b
+  #subnet_id: subnet-d39245a4
+  ## subnet 4
+  #availability_zone: us-east-1b
+  #subnet_id: subnet-85b755cc
+
+platforms:
+  - name: rhel-6.5
+    driver:
+      name: ec2
+      image_search:
+        tag-value: 'chef-latest'
+        virtualization-type: 'hvm'
+        name: '*chef-12.6-rhel6*'
+    provisioner:
+      chef_client_path: /opt/chef/bin/chef-client
+  - name: rhel-7.0
+    driver:
+      name: ec2
+      image_search:
+        tag-value: 'chef-latest'
+        virtualization-type: 'hvm'
+        name: '*chef-12.6-rhel7*'
+  - name: windows-2012r2
+    driver:
+      name: ec2
+      image_search:
+        virtualization-type: 'hvm'
+        name: 'Windows_Server-2012-R2*-English-*-Base-*'
+        owner-alias: 'amazon'
+      user_data: <%= File.expand_path('./test/integration/config/aws/lm_windows_user_data.txt') %>
+    transport:
+      username: administrator
+    provisioner:
+      require_chef_omnibus: 12.6.0
+
+suites:
+  - name: default
+    run_list:
+      - recipe[lm_awsconfig::default]
+      - recipe[xentaurs-config-management-workshop-chef::default]
+    attributes:
+      lm_awsconfig:
+        testkitchen: true
+
+transport:
+  username: ec2-user
+  ssh_key: <%= ENV['AWS_SSH_KEY_FILE'] %>
+
+provisioner:
+  name: chef_zero
+  require_chef_omnibus: false
+  http_proxy: http://sandbox-us-east-1-proxy.aws.lmig.com:3128
+  https_proxy: http://sandbox-us-east-1-proxy.aws.lmig.com:3128
+  client_rb:
+    no_proxy: 'chefrepo.lmig.com,169.254.169.254,localhost,127.0.0.1'
+
+verifier:
+  name: inspec
+  sudo: true
