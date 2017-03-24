@@ -1,7 +1,2 @@
-source 'https://chefsupermarket.lmig.com'
-
+source 'https://supermarket.chef.io'
 metadata
-
-group :testing do
-  cookbook 'lm_awsconfig'
-end

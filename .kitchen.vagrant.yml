@@ -5,8 +5,6 @@ driver:
 
 provisioner:
   name: chef_zero
-  https_proxy: http://www-proxy.lmig.com:80
-  http_proxy: http://www-proxy.lmig.com:80
 
 platforms:
   - name: centos-7.2
