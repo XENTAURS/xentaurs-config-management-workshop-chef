@@ -1,4 +1,4 @@
-Recipe Name
+Cookbook Name
 =========
 
 This is an example Xentaurs workshop project for Chef, Vagrant, and Kitchen integration
